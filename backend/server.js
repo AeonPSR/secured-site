@@ -15,11 +15,17 @@ app.use(session({
   saveUninitialized: false,
   cookie: { httpOnly: true, sameSite: 'strict' }
 }));
-app.use(csrf());
+
+if (process.env.NODE_ENV !== 'development') {
+  app.use(csrf());
+}
 
 app.get('/', (req, res) => {
   res.send('Secure Juice API is running.');
 });
+
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
 app.listen(3001, () => {
   console.log('Server running on http://localhost:3001');
