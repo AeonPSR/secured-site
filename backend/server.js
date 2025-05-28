@@ -24,8 +24,13 @@ app.get('/', (req, res) => {
   res.send('Secure Juice API is running.');
 });
 
+//Stuff so the routes are actually usable by the server
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
+
+const productRoutes = require('./routes/products');
+app.use('/api/products', productRoutes);
+
 
 app.listen(3001, () => {
   console.log('Server running on http://localhost:3001');
