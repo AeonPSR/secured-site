@@ -35,6 +35,10 @@ if (process.env.NODE_ENV !== 'development') {
   app.use(csrf());
 }
 
+app.get('/api/csrf-token', (req, res) => { //CSRF TOKEN thing ?? -> It's to make a token used by a session, necessary for other routes
+	res.json({ csrfToken: req.csrfToken() });
+});
+
 app.get('/', (req, res) => {
   res.send('Secure Juice API is running.');
 });
