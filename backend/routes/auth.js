@@ -74,6 +74,9 @@ router.get('/me', requireLogin, (req, res) => { //Print name (Debug)
 	res.json({ user: req.session.user });
 });
 
+app.get('/api/csrf-token', (req, res) => { //CSRF TOKEN thing ?? -> It's to make a token used by a session, necessary for other routes
+	res.json({ csrfToken: req.csrfToken() });
+});
 
 
 module.exports = router;

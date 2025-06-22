@@ -1,11 +1,19 @@
 const express = require('express');
 const session = require('express-session');
-const csrf = require('csurf');
-const helmet = require('helmet');
-const dotenv = require('dotenv');
+const csrf = require('csurf'); //session
+const helmet = require('helmet'); //Set HTTP headers
+const dotenv = require('dotenv'); //To use .env
+const rateLimit = require('express-rate-limit');
+const cors = require('cors'); //Restrict which websites can access the API.
 
 dotenv.config();
 const app = express();
+
+const limiter = rateLimit({
+	windowMs: 10 * 60 * 1000, // 10 minutes
+	max: 100,                 // Requests per windowMs
+	message: { message: 'Too many requests, slow down.' }
+});
 
 app.use(helmet());
 app.use(express.json());
@@ -16,6 +24,13 @@ app.use(session({
   cookie: { httpOnly: true, sameSite: 'strict' }
 }));
 
+app.use(limiter); //Calling the limiter so it will be used for ALL routes
+
+app.use(cors({
+	origin: process.env.CORS_ORIGIN,
+	credentials: true
+}));
+  
 if (process.env.NODE_ENV !== 'development') {
   app.use(csrf());
 }
