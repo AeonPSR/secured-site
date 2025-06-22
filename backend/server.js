@@ -34,6 +34,9 @@ app.use('/api/products', productRoutes);
 const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 
+const cartRoutes = require('./routes/cart');
+app.use('/api/cart', cartRoutes);
+
 app.listen(3001, () => {
   console.log('Server running on http://localhost:3001');
 });
