@@ -103,6 +103,19 @@ router.post('/checkout', requireLogin, (req, res) => {
 	  res.status(500).json({ message: 'Checkout failed' });
 	}
   });
+
+  // DELETE /api/cart/clear
+router.delete('/clear', requireLogin, (req, res) => {
+	const userId = req.session.user.id;
+  
+	try {
+	  db.prepare('DELETE FROM cart_items WHERE user_id = ?').run(userId);
+	  res.json({ message: 'Cart cleared' });
+	} catch (err) {
+	  console.error(err);
+	  res.status(500).json({ message: 'Failed to clear cart' });
+	}
+});
   
 
 module.exports = router;

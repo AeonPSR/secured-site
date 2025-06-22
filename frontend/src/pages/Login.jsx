@@ -1,32 +1,30 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../api/auth';
+import { getCsrfToken, login } from '../api/auth';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [message, setMessage] = useState('');
 
-  async function handleSubmit(e) {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const res = await login(email, password);
-    if (res.message === 'Logged in successfully') {
-      navigate('/'); // go to home/products page
-    } else {
-      setError(res.message || 'Login failed');
-    }
-  }
+
+    await getCsrfToken(); // Sets cookie + get session token-thing
+
+    const data = await login(email, password); // Adds the CSRF-Token header (I think ?)
+    setMessage(data.message || 'Logged in!');
+	window.location.reload();
+  };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: '2rem' }}>
       <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} /><br />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} /><br />
+      <form onSubmit={handleLogin}>
+        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
+        <input value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="Password" />
         <button type="submit">Login</button>
       </form>
+      <p>{message}</p>
     </div>
   );
 }
